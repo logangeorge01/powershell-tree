@@ -44,7 +44,7 @@ function Write-TreeNode {
     else {
         $connector = "├─"
     }
-    Write-Host "$Prefix$connector $Text"
+    Write-Output "$Prefix$connector $Text"
 }
 
 function Write-JsonObject {
@@ -55,7 +55,7 @@ function Write-JsonObject {
         [hashtable]$Transform = @{}
     )
     
-    if ($Object -eq $null) {
+    if ($null -eq $Object) {
         return
     }
     
@@ -100,7 +100,7 @@ function Write-JsonObjectProperties {
         [hashtable]$Transform = @{}
     )
     
-    if ($Object -eq $null) {
+    if ($null -eq $Object) {
         return
     }
     
@@ -124,7 +124,7 @@ function Write-JsonObjectProperties {
     foreach ($property in $properties) {
         $currentItem++
         $isLast = ($currentItem -eq $totalItems)
-        $value = if ($property.Value -eq $null) { "null" } else { $property.Value.ToString() }
+        $value = if ($null -eq $property.Value) { "null" } else { $property.Value.ToString() }
         
         # Apply transform if specified for this property
         if ($Transform.ContainsKey($property.Name) -and $Transform[$property.Name] -is [scriptblock]) {
@@ -144,7 +144,7 @@ function Write-JsonObjectProperties {
         $currentItem++
         $isLast = ($currentItem -eq $totalItems)
         
-        if ($collection.Value -ne $null) {
+        if ($null -ne $collection.Value) {
             if ($collection.Value -is [System.Array] -or $collection.Value -is [System.Object[]]) {
                 if ($collection.Value.Count -gt 0) {
                     Write-TreeNode "$($collection.Name)" -Prefix $Prefix -IsLast $isLast
@@ -175,18 +175,18 @@ function Show-JsonTree {
     for ($i = 0; $i -lt $items.Count; $i++) {
         $item = $items[$i]
         
-        Write-Host ""
+        Write-Output ""
 
         if ($item.PSObject.Properties['name']) {
-            Write-Host "$($item.name)"
+            Write-Output "$($item.name)"
             Write-JsonObjectProperties -Object $item -Transform $Transform
         }
         else {
-            Write-Host "Item [$i]"
+            Write-Output "Item [$i]"
             Write-JsonObjectProperties -Object $item -Transform $Transform
         }
     }
-    Write-Host ""
+    Write-Output ""
 }
 
 Export-ModuleMember -Function Show-JsonTree, New-FileSizeTransform

@@ -1,15 +1,15 @@
 # Show various JSON scenarios with Show-JsonTree
 Import-Module .\tree.psm1 -Force
 
-Write-Host "=== Example 1: Single Object with Name ===" -ForegroundColor Yellow
+Write-Output "=== Example 1: Single Object with Name ==="
 $singleWithName = '{"name": "MyFile", "size": 1024, "type": "document", "readonly": true}'
 Show-JsonTree -JsonData $singleWithName
 
-Write-Host "=== Example 2: Single Object without Name ===" -ForegroundColor Yellow
+Write-Output "=== Example 2: Single Object without Name ==="
 $singleWithoutName = '{"size": 2048, "type": "folder", "permissions": "rwx", "hidden": false}'
 Show-JsonTree -JsonData $singleWithoutName
 
-Write-Host "=== Example 3: Array of Simple Objects ===" -ForegroundColor Yellow
+Write-Output "=== Example 3: Array of Simple Objects ==="
 $arraySimple = '[
     {"name": "File1", "size": 512},
     {"name": "File2", "size": 1024},
@@ -17,7 +17,7 @@ $arraySimple = '[
 ]'
 Show-JsonTree -JsonData $arraySimple
 
-Write-Host "=== Example 4: Single Complex Object with Nested Properties ===" -ForegroundColor Yellow
+Write-Output "=== Example 4: Single Complex Object with Nested Properties ==="
 $complexSingle = '{
     "name": "ProjectFolder",
     "type": "directory",
@@ -34,7 +34,7 @@ $complexSingle = '{
 }'
 Show-JsonTree -JsonData $complexSingle
 
-Write-Host "=== Example 5: Array of Complex Objects ===" -ForegroundColor Yellow
+Write-Output "=== Example 5: Array of Complex Objects ==="
 $arrayComplex = '[
     {
         "name": "Server1",
@@ -49,7 +49,7 @@ $arrayComplex = '[
 ]'
 Show-JsonTree -JsonData $arrayComplex
 
-Write-Host "=== Example 6: Single Object with Arrays Only ===" -ForegroundColor Yellow
+Write-Output "=== Example 6: Single Object with Arrays Only ==="
 $arraysOnly = '{
     "servers": ["web1", "web2", "web3"],
     "databases": ["db1", "db2"],
@@ -57,7 +57,7 @@ $arraysOnly = '{
 }'
 Show-JsonTree -JsonData $arraysOnly
 
-Write-Host "=== Example 7: Empty Arrays and Null Values ===" -ForegroundColor Yellow
+Write-Output "=== Example 7: Empty Arrays and Null Values ==="
 $withNulls = '{
     "name": "TestItem",
     "description": null,
@@ -67,7 +67,7 @@ $withNulls = '{
 }'
 Show-JsonTree -JsonData $withNulls
 
-Write-Host "=== Example 8: Deeply Nested Single Object ===" -ForegroundColor Yellow
+Write-Output "=== Example 8: Deeply Nested Single Object ==="
 $deepNested = '{
     "name": "DeepStructure",
     "level1": {
@@ -80,3 +80,21 @@ $deepNested = '{
     }
 }'
 Show-JsonTree -JsonData $deepNested
+
+Write-Output "=== Example 9: File Sizes with Transformation ==="
+$fileSizes = '{
+    "name": "FileSystem",
+    "files": [
+        {"name": "small.txt", "size": 512},
+        {"name": "medium.doc", "size": 2048576},
+        {"name": "large.zip", "size": 1073741824}
+    ],
+    "totalSize": 1075792896,
+    "freeSpace": 5368709120
+}'
+$sizeTransform = @{
+    'size' = New-FileSizeTransform
+    'totalSize' = New-FileSizeTransform
+    'freeSpace' = New-FileSizeTransform
+}
+Show-JsonTree -JsonData $fileSizes -Transform $sizeTransform
